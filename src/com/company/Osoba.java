@@ -1,6 +1,8 @@
 package com.company;
 
-public class Osoba {
+import java.util.Random;
+
+public abstract class Osoba {
     private int idPracownika;
     private double tygWyplataBrutto;
     private double tygWyplataNetto;
@@ -9,6 +11,7 @@ public class Osoba {
     private String imie;
     private String nazwisko;
     private String status;
+    private Konto konto; //KOMPOZYCJA
 
     public Osoba(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
                  double stawkaGodzinowa, String imie, String nazwisko, String status) {
@@ -20,6 +23,9 @@ public class Osoba {
         this.imie = imie;
         this.nazwisko = nazwisko;
         this.status = status;
+
+        Random r = new Random();
+        konto  = new Konto(imie,nazwisko,r.nextInt(1000000000,Integer.MAX_VALUE));
     }
 
     @Override
@@ -29,6 +35,10 @@ public class Osoba {
                 + tygWyplataNetto + "\nstawka godzinowa: " + stawkaGodzinowa + "\nliczba przepracowanych godzin" + liczbaPrzepracowanychGodzin;
     }
 
-    //void SprawdzSwojGrafik(){}
+    void SprawdzSwojGrafik(){
+
+
+
+    }
 
 }

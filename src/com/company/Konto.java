@@ -11,4 +11,17 @@ public class Konto {
         this.nazwiskoW = nazwiskoW;
         this.nrKonta = nrKonta;
     }
+
+    public String getImieW() {
+        return imieW;
+    }
+
+    public String getNazwiskoW() {
+        return nazwiskoW;
+    }
+
+    public int getNrKonta() {
+        return nrKonta;
+    }
+
 }
