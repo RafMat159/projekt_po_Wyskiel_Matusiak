@@ -35,10 +35,17 @@ public abstract class Osoba {
                 + tygWyplataNetto + "\nstawka godzinowa: " + stawkaGodzinowa + "\nliczba przepracowanych godzin" + liczbaPrzepracowanychGodzin;
     }
 
-    void SprawdzSwojGrafik(){
-
-
-
+    void SprawdzSwojGrafik(Grafik grafik){
+        String[][] tabGrafik = grafik.getTygodniowySzablon();
+        for(int i = 1; i < tabGrafik.length; i++){
+            System.out.print(tabGrafik[i][0] + ": ");
+            for (int j = 1;j<tabGrafik[i].length; j++){
+                if(Integer.toString(idPracownika).equals(tabGrafik[i][j])){
+                    System.out.print(tabGrafik[0][j] + " ");
+                }
+            }
+            System.out.println();
+        }
     }
 
 }
