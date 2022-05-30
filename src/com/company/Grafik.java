@@ -2,8 +2,10 @@ package com.company;
 
 public class Grafik {
 
-    private String[][] tygodniowySzablon = new String[4][8]; //3 - mozliwe zmiany w ciagu dnia + wiersz na dzien tygodnia,
-                                                            // 7 - liczba dni tygodnia + wiersz na godzine
+    int wiersze = 4; //3 - mozliwe zmiany w ciagu dnia + wiersz na dzien tygodnia
+    int kolumny = 8; // 7 - liczba dni tygodnia + wiersz na godzine
+    private String[][] tygodniowySzablon = new String[wiersze][kolumny];
+
 
 
     public Grafik() {
@@ -21,7 +23,7 @@ public class Grafik {
     }
 
     private class Ranking{          //klasa wewnetrzna
-      private String[][] statystyki;
+        private String[][] statystyki;
         public Ranking(int liczbaPracownikow) {
             statystyki = new String[liczbaPracownikow][3];
         }
@@ -31,6 +33,15 @@ public class Grafik {
         return tygodniowySzablon;
     }
 
+    public void uzupelnijGrafik(int dzien, int zmiana, String nazwisko){
+        tygodniowySzablon[zmiana][dzien] = nazwisko;
+    }
+
+    public void wyswietlGrafik(){
+        for(int i = 0; i < wiersze; i++){
+            System.out.printf("%25s  %15s  %15s  %15s  %15s  %15s  %15s %15s",tygodniowySzablon[i][0],tygodniowySzablon[i][1],tygodniowySzablon[i][2],tygodniowySzablon[i][3],tygodniowySzablon[i][4],tygodniowySzablon[i][5],tygodniowySzablon[i][6],tygodniowySzablon[i][7] + "\n");
+        }
+    }
 
 
     //wydrukujTransakcje
