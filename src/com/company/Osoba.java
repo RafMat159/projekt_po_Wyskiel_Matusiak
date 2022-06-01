@@ -35,7 +35,7 @@ public abstract class Osoba {
                 + tygWyplataNetto + "\nstawka godzinowa: " + stawkaGodzinowa + "\nliczba przepracowanych godzin" + liczbaPrzepracowanychGodzin;
     }
 
-    void SprawdzSwojGrafik(Grafik grafik){
+    public void SprawdzSwojGrafik(Grafik grafik){
         String[][] tabGrafik = grafik.getTygodniowySzablon();
         for(int i = 1; i < tabGrafik.length; i++){
             System.out.print(tabGrafik[i][0] + ": ");
@@ -48,4 +48,63 @@ public abstract class Osoba {
         }
     }
 
+    public void ObliczWyplate(){
+        tygWyplataBrutto = liczbaPrzepracowanychGodzin*stawkaGodzinowa;
+        if(status.equals("student"))
+            tygWyplataNetto = tygWyplataBrutto;
+        else
+            tygWyplataNetto = tygWyplataBrutto*0.23;
+    }
+
+    public int getIdPracownika() {
+        return idPracownika;
+    }
+
+    public double getTygWyplataBrutto() {
+        return tygWyplataBrutto;
+    }
+
+    public double getTygWyplataNetto() {
+        return tygWyplataNetto;
+    }
+
+    public double getLiczbaPrzepracowanychGodzin() {
+        return liczbaPrzepracowanychGodzin;
+    }
+
+    public double getStawkaGodzinowa() {
+        return stawkaGodzinowa;
+    }
+
+    public String getImie() {
+        return imie;
+    }
+
+    public String getNazwisko() {
+        return nazwisko;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Konto getKonto() {
+        return konto;
+    }
+
+    public void setTygWyplataBrutto(double tygWyplataBrutto) {
+        this.tygWyplataBrutto = tygWyplataBrutto;
+    }
+
+    public void setTygWyplataNetto(double tygWyplataNetto) {
+        this.tygWyplataNetto = tygWyplataNetto;
+    }
+
+    public void setLiczbaPrzepracowanychGodzin(double liczbaPrzepracowanychGodzin) {
+        this.liczbaPrzepracowanychGodzin = liczbaPrzepracowanychGodzin;
+    }
+
+    public void setStawkaGodzinowa(double stawkaGodzinowa) {
+        this.stawkaGodzinowa = stawkaGodzinowa;
+    }
 }

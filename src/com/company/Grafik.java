@@ -2,8 +2,8 @@ package com.company;
 
 public class Grafik {
 
-    int wiersze = 4; //3 - mozliwe zmiany w ciagu dnia + wiersz na dzien tygodnia
-    int kolumny = 8; // 7 - liczba dni tygodnia + wiersz na godzine
+    private static final int wiersze = 4; //3 - mozliwe zmiany w ciagu dnia + wiersz na dzien tygodnia
+    private  static final int kolumny = 8; // 7 - liczba dni tygodnia + wiersz na godzine
     private String[][] tygodniowySzablon = new String[wiersze][kolumny];
 
 
@@ -33,8 +33,8 @@ public class Grafik {
         return tygodniowySzablon;
     }
 
-    public void uzupelnijGrafik(int dzien, int zmiana, String nazwisko){
-        tygodniowySzablon[zmiana][dzien] = nazwisko;
+    public void uzupelnijGrafik(int dzien, int zmiana, String id){
+        tygodniowySzablon[zmiana][dzien] = id;
     }
 
     public void wyswietlGrafik(){
