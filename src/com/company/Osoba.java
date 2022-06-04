@@ -35,7 +35,7 @@ public abstract class Osoba {
                 + tygWyplataNetto + "\nstawka godzinowa: " + stawkaGodzinowa + "\nliczba przepracowanych godzin" + liczbaPrzepracowanychGodzin;
     }
 
-    public void SprawdzSwojGrafik(Grafik grafik){
+    public void sprawdzGrafik(Grafik grafik){
         String[][] tabGrafik = grafik.getTygodniowySzablon();
         for(int i = 1; i < tabGrafik.length; i++){
             System.out.print(tabGrafik[i][0] + ": ");
@@ -48,13 +48,6 @@ public abstract class Osoba {
         }
     }
 
-    public void ObliczWyplate(){
-        tygWyplataBrutto = liczbaPrzepracowanychGodzin*stawkaGodzinowa;
-        if(status.equals("student"))
-            tygWyplataNetto = tygWyplataBrutto;
-        else
-            tygWyplataNetto = tygWyplataBrutto*0.23;
-    }
 
     public int getIdPracownika() {
         return idPracownika;

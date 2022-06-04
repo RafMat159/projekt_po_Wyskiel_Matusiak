@@ -1,10 +1,12 @@
 package com.company;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Manager extends Osoba {
+public class Manager extends Osoba implements MenuInterfejs {
     private List<Pracownik> listaPracownikow = new ArrayList<>(); //KOMPOZYCJA
 
     public Manager(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
@@ -16,11 +18,54 @@ public class Manager extends Osoba {
         listaPracownikow.add(pracownik);
     }
 
+    @Override
+    public void menu(Grafik grafik) {
+        System.out.println("Wybierz dzialanie:\n1.Ustal Grafik\n2.Zmodyfikuj grafik\n3.Sprawdz grafik\n4.Wyplac wynagrodzenie\n5.Podnies stawke\n6.Premia");
+        Scanner in = new Scanner(System.in);
+        int wybor = in.nextInt();
+        switch(wybor){
+            case 1:
+                ustalGrafik(grafik);
+                break;
+            case 2:
+                zmodyfikujGrafik(grafik);
+                break;
+            case 3:
+                sprawdzGrafik(grafik);
+                break;
+            case 4:
+                DayOfWeek dzienTygodnia = DayOfWeek.from(LocalDate.now());
+                wyplacWynagrodzenie(dzienTygodnia.getValue());
+                break;
+            case 5:
+                System.out.println("Wybierz pracownika ktoremu chcesz podniesc stawke:");
+                for(int i = 0; i < listaPracownikow.size(); i++){
+                    System.out.println(listaPracownikow.get(i).idImieNazwiskoPracownika());
+                }
+                int id = in.nextInt();
+                int index = znajdzId(id);
+                podniesStawke(listaPracownikow.get(index));
+                break;
+            case 6:
+                System.out.println("Wybierz pracownika ktoremu chcesz dac premie :");   //PRACOWNIK BEDZIE POBIERANY Z TABLICY RANKING
+                for(int i = 0; i < listaPracownikow.size(); i++){
+                    System.out.println(listaPracownikow.get(i).idImieNazwiskoPracownika());
+                }
+                int id2 = in.nextInt();
+                int index2 = znajdzId(id2);
+                premia(listaPracownikow.get(index2));
+                break;
+            default:
+                System.out.println("Nie mozesz wykonac tego dzialania.");
+
+        }
+    }
+
     public void ustalGrafik(Grafik grafik){
         Scanner in = new Scanner(System.in);
         System.out.println("Pracownicy: ");//Wyswietlenie listy pracownikow
         for(int i = 0; i < listaPracownikow.size(); i++){
-            System.out.println(listaPracownikow.get(i).IdImieNazwiskoPracownika());
+            System.out.println(listaPracownikow.get(i).idImieNazwiskoPracownika());
         }
         for(int i = 1; i <= 7; i++) {
             for (int j = 1; j <= 3; j++){
@@ -47,9 +92,14 @@ public class Manager extends Osoba {
                     grafik.uzupelnijGrafik(i, j, Integer.toString(id));
                     int index = znajdzId(id);
                     listaPracownikow.get(index).setLiczbaPrzepracowanychGodzin(listaPracownikow.get(index).getLiczbaPrzepracowanychGodzin()+8.0); //zwiekszanie liczby przepracowanych godzin
+
                 }
             }
         }
+        for(int i = 0; i < listaPracownikow.size(); i++){
+            obliczWyplate(listaPracownikow.get(i));
+        }
+
     }
 
     public void zmodyfikujGrafik(Grafik grafik){
@@ -60,7 +110,7 @@ public class Manager extends Osoba {
         int zmiana = in.nextInt();
         System.out.println("Wybierz pracownika");
         for(int i = 0; i < listaPracownikow.size(); i++){
-            System.out.println(listaPracownikow.get(i).IdImieNazwiskoPracownika());
+            System.out.println(listaPracownikow.get(i).idImieNazwiskoPracownika());
         }
         int id = in.nextInt();
         boolean prawda = true;
@@ -75,7 +125,10 @@ public class Manager extends Osoba {
                 String[][] tabGrafik = grafik.getTygodniowySzablon();
                 int indexStarego = znajdzId(Integer.parseInt(tabGrafik[zmiana][dzien]));
                 listaPracownikow.get(indexStarego).setLiczbaPrzepracowanychGodzin(listaPracownikow.get(indexStarego).getLiczbaPrzepracowanychGodzin()-8.0); //zmniejszenie liczby przepracowanych godzin
+                obliczWyplate(listaPracownikow.get(indexStarego));
                 listaPracownikow.get(index).setLiczbaPrzepracowanychGodzin(listaPracownikow.get(index).getLiczbaPrzepracowanychGodzin()+8.0); //zwiekszanie liczby przepracowanych godzin
+                obliczWyplate(listaPracownikow.get(index));
+
             }
         }
         grafik.uzupelnijGrafik(dzien, zmiana, Integer.toString(id));
@@ -90,9 +143,46 @@ public class Manager extends Osoba {
     }
 
     @Override
-    public void SprawdzSwojGrafik(Grafik grafik){
+    public void sprawdzGrafik(Grafik grafik){
         grafik.wyswietlGrafik();    //manager ma dostep do calego grafiku danego tygodnia
     }
 
-    //ustalGrafik,zmodyfikujGrafik,Premia,SprawdzSwojGrafik,SprawdzWyplate,PodniesStawke,WyplacWynagrodzenie
+    public void wyplacWynagrodzenie(int czyNiedziela){
+        if(czyNiedziela == 7){
+            for(int i=0;i<listaPracownikow.size();i++){
+                System.out.println("Wyplata wynagrodzenia:\nimie: " + listaPracownikow.get(i).getImie() + "\nnazwisko: "+ listaPracownikow.get(i).getNazwisko() + "\nnrKonta:" + listaPracownikow.get(i).getKonto().getNrKonta());
+                if(listaPracownikow.get(i).getStatus().equals("student"))
+                    System.out.println("kwota: " + listaPracownikow.get(i).getTygWyplataBrutto());
+                else
+                    System.out.println("kwota: " + listaPracownikow.get(i).getTygWyplataNetto());
+            }
+        }else
+            System.out.println("Wyplata nie mozliwa do zrealizowania, do dnia wyplaty pozostalo " + (7 - czyNiedziela) + " dni.");
+    }
+
+    private void podniesStawke(Pracownik p1){
+        System.out.println("O ile chcesz podeniesc stawke godzinowa: ");
+        Scanner in = new Scanner(System.in);
+        double stawka = in.nextDouble();
+        p1.setStawkaGodzinowa(p1.getStawkaGodzinowa() + stawka);
+        obliczWyplate(p1);
+    }
+
+    private void premia(Pracownik p1){
+        System.out.println("Podaj wysokosc premii: ");
+        Scanner in = new Scanner(System.in);
+        double kwota = in.nextDouble();
+        p1.setTygWyplataBrutto(p1.getTygWyplataBrutto() + kwota);
+        obliczWyplate(p1);
+
+    }
+
+    public void obliczWyplate(Pracownik p1){
+        p1.setTygWyplataBrutto(p1.getTygWyplataBrutto()+ p1.getLiczbaPrzepracowanychGodzin()*p1.getStawkaGodzinowa());
+        if(p1.getStatus().equals("student"))
+            p1.setTygWyplataNetto(p1.getTygWyplataBrutto());
+        else
+            p1.setTygWyplataNetto(p1.getTygWyplataBrutto() - p1.getTygWyplataBrutto()*0.23);
+    }
+    //ustalGrafik,zmodyfikujGrafik,Premia,SprawdzGrafik,PodniesStawke,WyplacWynagrodzenie
 }
