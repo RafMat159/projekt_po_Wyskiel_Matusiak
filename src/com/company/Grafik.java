@@ -1,12 +1,13 @@
 package com.company;
 
+import java.util.List;
+
 public class Grafik {
 
     private static final int wiersze = 4; //3 - mozliwe zmiany w ciagu dnia + wiersz na dzien tygodnia
     private  static final int kolumny = 8; // 7 - liczba dni tygodnia + wiersz na godzine
     private String[][] tygodniowySzablon = new String[wiersze][kolumny];
-
-
+    private Ranking ranking;
 
     public Grafik() {
         tygodniowySzablon[0][0] = "zmiana/dzien tygodnia";
@@ -26,7 +27,71 @@ public class Grafik {
         private String[][] statystyki;
         public Ranking(int liczbaPracownikow) {
             statystyki = new String[liczbaPracownikow][3];
+            statystyki[0][0] = "idPracownika";
+            statystyki[0][1] = "liczba godzin";
+            statystyki[0][2] = "kwota";
+
         }
+
+        private void uzupelnijRanking(List<Pracownik> listaPracownikow){
+            int dlugosc = listaPracownikow.size()+1;
+            for(int i=0; i <listaPracownikow.size();i++){
+                statystyki[i+1][0] = Integer.toString(listaPracownikow.get(i).getIdPracownika());
+                statystyki[i+1][1] = Double.toString(listaPracownikow.get(i).getLiczbaPrzepracowanychGodzin());
+                statystyki[i+1][2] = Double.toString(listaPracownikow.get(i).getTygWyplataBrutto());
+            }
+            sortuj(dlugosc); //sortowanie rankingu
+        }
+
+        private void sortuj(int dlugosc){   //Bubble sort
+            String zamianaId;
+            String zamianaGodzin;
+            String zamianaKwoty;
+            for(int i = 0; i <dlugosc-1;++i){
+                for (int j = 1;j<dlugosc-i-1;++j){
+                    if(Double.parseDouble(statystyki[j+1][1]) > Double.parseDouble(statystyki[j][1])) {
+                        zamianaId = statystyki[j][0];
+                        zamianaGodzin = statystyki[j][1];
+                        zamianaKwoty = statystyki[j][2];
+                        statystyki[j][0] = statystyki[j+1][0];
+                        statystyki[j][1] = statystyki[j+1][1];
+                        statystyki[j][2] = statystyki[j+1][2];
+                        statystyki[j+1][0] = zamianaId;
+                        statystyki[j+1][1] = zamianaGodzin;
+                        statystyki[j+1][2] = zamianaKwoty;
+
+                    }
+                }
+            }
+        }
+        private void wyswietlRanking(){
+            for(int i = 0; i < statystyki.length; i++){
+                System.out.printf("%15s  %15s %15s",statystyki[i][0],statystyki[i][1],statystyki[i][2] + "\n");
+            }
+        }
+
+        private void zaktualizujRanking(Pracownik pracownik){
+            for(int i=1;i< statystyki.length;i++){
+                if(statystyki[i][0].equals(Integer.toString(pracownik.getIdPracownika()))) {
+                    statystyki[i][0] = Integer.toString(pracownik.getIdPracownika());
+                    statystyki[i][1] = Double.toString(pracownik.getLiczbaPrzepracowanychGodzin());
+                    statystyki[i][2] = Double.toString(pracownik.getTygWyplataBrutto());
+                }
+            }
+            sortuj(statystyki.length);
+        }
+    }
+    public void uzupelnijRanking(List<Pracownik> listaPracownikow){
+        ranking = new Ranking((listaPracownikow.size()+1));
+        ranking.uzupelnijRanking(listaPracownikow);
+    }
+    public void wyswietlRanking(){
+        ranking.wyswietlRanking();
+    }
+
+    public void zaktualizujRanking(Pracownik pracownik){
+        ranking.zaktualizujRanking(pracownik);
+
     }
 
     public String[][] getTygodniowySzablon() {
@@ -44,5 +109,11 @@ public class Grafik {
     }
 
 
+    public Ranking getRanking() {
+        return ranking;
+    }
 
+    public void setRanking(Ranking ranking) {
+        this.ranking = ranking;
+    }
 }

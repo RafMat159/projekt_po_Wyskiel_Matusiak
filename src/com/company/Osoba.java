@@ -48,6 +48,9 @@ public abstract class Osoba {
         }
     }
 
+    public void sprawdzRanking(Grafik grafik){
+        grafik.wyswietlRanking();
+    }
 
     public int getIdPracownika() {
         return idPracownika;

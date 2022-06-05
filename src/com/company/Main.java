@@ -33,6 +33,7 @@ public class Main {
             Scanner in = new Scanner(System.in);
             prawda = in.nextInt();
         }while(prawda == 1);
+
 //        System.out.println("Podaj kod pracownika");
 //        Scanner in = new Scanner(System.in);
 //        int kod = in.nextInt();

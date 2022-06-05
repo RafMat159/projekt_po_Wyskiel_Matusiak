@@ -20,7 +20,7 @@ public class Manager extends Osoba implements MenuInterfejs {
 
     @Override
     public void menu(Grafik grafik) {
-        System.out.println("Wybierz dzialanie:\n1.Ustal Grafik\n2.Zmodyfikuj grafik\n3.Sprawdz grafik\n4.Wyplac wynagrodzenie\n5.Podnies stawke\n6.Premia");
+        System.out.println("Wybierz dzialanie:\n1.Ustal Grafik\n2.Zmodyfikuj grafik\n3.Sprawdz grafik\n4.Wyplac wynagrodzenie\n5.Podnies stawke\n6.Premia\n7.WyswietlRanking");
         Scanner in = new Scanner(System.in);
         int wybor = in.nextInt();
         switch(wybor){
@@ -54,6 +54,9 @@ public class Manager extends Osoba implements MenuInterfejs {
                 int id2 = in.nextInt();
                 int index2 = znajdzId(id2);
                 premia(listaPracownikow.get(index2));
+                break;
+            case 7:
+                sprawdzRanking(grafik);
                 break;
             default:
                 System.out.println("Nie mozesz wykonac tego dzialania.");
@@ -92,14 +95,12 @@ public class Manager extends Osoba implements MenuInterfejs {
                     grafik.uzupelnijGrafik(i, j, Integer.toString(id));
                     int index = znajdzId(id);
                     listaPracownikow.get(index).setLiczbaPrzepracowanychGodzin(listaPracownikow.get(index).getLiczbaPrzepracowanychGodzin()+8.0); //zwiekszanie liczby przepracowanych godzin
-
+                    obliczWyplate(listaPracownikow.get(index));
                 }
             }
         }
-        for(int i = 0; i < listaPracownikow.size(); i++){
-            obliczWyplate(listaPracownikow.get(i));
-        }
 
+        grafik.uzupelnijRanking(listaPracownikow);//uzupelnienie rankingu
     }
 
     public void zmodyfikujGrafik(Grafik grafik){
@@ -126,9 +127,10 @@ public class Manager extends Osoba implements MenuInterfejs {
                 int indexStarego = znajdzId(Integer.parseInt(tabGrafik[zmiana][dzien]));
                 listaPracownikow.get(indexStarego).setLiczbaPrzepracowanychGodzin(listaPracownikow.get(indexStarego).getLiczbaPrzepracowanychGodzin()-8.0); //zmniejszenie liczby przepracowanych godzin
                 obliczWyplate(listaPracownikow.get(indexStarego));
+                grafik.zaktualizujRanking(listaPracownikow.get(indexStarego));
                 listaPracownikow.get(index).setLiczbaPrzepracowanychGodzin(listaPracownikow.get(index).getLiczbaPrzepracowanychGodzin()+8.0); //zwiekszanie liczby przepracowanych godzin
                 obliczWyplate(listaPracownikow.get(index));
-
+                grafik.zaktualizujRanking(listaPracownikow.get(index));
             }
         }
         grafik.uzupelnijGrafik(dzien, zmiana, Integer.toString(id));
@@ -146,6 +148,7 @@ public class Manager extends Osoba implements MenuInterfejs {
     public void sprawdzGrafik(Grafik grafik){
         grafik.wyswietlGrafik();    //manager ma dostep do calego grafiku danego tygodnia
     }
+
 
     public void wyplacWynagrodzenie(int czyNiedziela){
         if(czyNiedziela == 7){
@@ -178,7 +181,7 @@ public class Manager extends Osoba implements MenuInterfejs {
     }
 
     public void obliczWyplate(Pracownik p1){
-        p1.setTygWyplataBrutto(p1.getTygWyplataBrutto()+ p1.getLiczbaPrzepracowanychGodzin()*p1.getStawkaGodzinowa());
+        p1.setTygWyplataBrutto(p1.getLiczbaPrzepracowanychGodzin()*p1.getStawkaGodzinowa());
         if(p1.getStatus().equals("student"))
             p1.setTygWyplataNetto(p1.getTygWyplataBrutto());
         else

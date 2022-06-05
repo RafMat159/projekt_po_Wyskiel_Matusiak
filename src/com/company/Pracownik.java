@@ -22,7 +22,7 @@ public class Pracownik extends Osoba implements MenuInterfejs{
 
     @Override
     public void menu(Grafik grafik){
-        System.out.println("Wybierz dzialanie:\n1. Sprawdz swoj grafik\n2. Sprawdz swoja wyplate");
+        System.out.println("Wybierz dzialanie:\n1.Sprawdz swoj grafik\n2.Sprawdz swoja wyplate\n3.WyswietlRanking");
         Scanner in = new Scanner(System.in);
         int dzialanie = in.nextInt();
         switch (dzialanie){
@@ -32,8 +32,11 @@ public class Pracownik extends Osoba implements MenuInterfejs{
             case 2:
                 sprawdzWyplate();
                 break;
+            case 3:
+                sprawdzRanking(grafik);
+                break;
             default:
-                System.out.println("Nie mozesz wykonac tego dzialania");
+                System.out.println("Nie mozesz wykonac tego dzialania.");
         }
     }
 
