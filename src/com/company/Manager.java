@@ -1,5 +1,6 @@
 package com.company;
 
+import java.io.FileNotFoundException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ public class Manager extends Osoba implements MenuInterfejs {
     private List<Pracownik> listaPracownikow = new ArrayList<>(); //KOMPOZYCJA
 
     public Manager(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
-                   double stawkaGodzinowa, String imie, String nazwisko, String status) {
-        super(idPracownika, tygWyplataBrutto, tygWyplataNetto, liczbaPrzepracowanychGodzin, stawkaGodzinowa, imie, nazwisko, status);
+                   double stawkaGodzinowa, double wysokoscPremii, String imie, String nazwisko, String status) {
+        super(idPracownika, tygWyplataBrutto, tygWyplataNetto, liczbaPrzepracowanychGodzin, stawkaGodzinowa, wysokoscPremii, imie, nazwisko, status);
     }
 
     public void dodajPracownika(Pracownik pracownik){
@@ -19,8 +20,8 @@ public class Manager extends Osoba implements MenuInterfejs {
     }
 
     @Override
-    public void menu(Grafik grafik) {
-        System.out.println("Wybierz dzialanie:\n1.Ustal Grafik\n2.Zmodyfikuj grafik\n3.Sprawdz grafik\n4.Wyplac wynagrodzenie\n5.Podnies stawke\n6.Premia\n7.WyswietlRanking");
+    public void menu(Grafik grafik) throws FileNotFoundException {
+        System.out.println("Wybierz dzialanie:\n1.Ustal Grafik\n2.Zmodyfikuj grafik\n3.Sprawdz grafik\n4.Wyplac wynagrodzenie\n5.Podnies stawke\n6.Premia\n7.Wyswietl Ranking\n8.Zapisz grafik do pliku");
         Scanner in = new Scanner(System.in);
         int wybor = in.nextInt();
         switch(wybor){
@@ -47,16 +48,15 @@ public class Manager extends Osoba implements MenuInterfejs {
                 podniesStawke(listaPracownikow.get(index));
                 break;
             case 6:
-                System.out.println("Wybierz pracownika ktoremu chcesz dac premie :");   //PRACOWNIK BEDZIE POBIERANY Z TABLICY RANKING
-                for(int i = 0; i < listaPracownikow.size(); i++){
-                    System.out.println(listaPracownikow.get(i).idImieNazwiskoPracownika());
-                }
-                int id2 = in.nextInt();
+                int id2 = grafik.pobierzIdPierwszegoMiejsca();;
                 int index2 = znajdzId(id2);
                 premia(listaPracownikow.get(index2));
                 break;
             case 7:
                 sprawdzRanking(grafik);
+                break;
+            case 8:
+                grafik.zapiszDoPliku();
                 break;
             default:
                 System.out.println("Nie mozesz wykonac tego dzialania.");
@@ -175,13 +175,12 @@ public class Manager extends Osoba implements MenuInterfejs {
         System.out.println("Podaj wysokosc premii: ");
         Scanner in = new Scanner(System.in);
         double kwota = in.nextDouble();
-        p1.setTygWyplataBrutto(p1.getTygWyplataBrutto() + kwota);
+        p1.setWysokoscPremii(kwota);
         obliczWyplate(p1);
-
     }
 
     public void obliczWyplate(Pracownik p1){
-        p1.setTygWyplataBrutto(p1.getLiczbaPrzepracowanychGodzin()*p1.getStawkaGodzinowa());
+        p1.setTygWyplataBrutto(p1.getLiczbaPrzepracowanychGodzin()*p1.getStawkaGodzinowa() + p1.getWysokoscPremii());
         if(p1.getStatus().equals("student"))
             p1.setTygWyplataNetto(p1.getTygWyplataBrutto());
         else

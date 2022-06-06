@@ -1,5 +1,7 @@
 package com.company;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.List;
 
 public class Grafik {
@@ -29,7 +31,7 @@ public class Grafik {
             statystyki = new String[liczbaPracownikow][3];
             statystyki[0][0] = "idPracownika";
             statystyki[0][1] = "liczba godzin";
-            statystyki[0][2] = "kwota";
+            statystyki[0][2] = "kwota[PLN]";
 
         }
 
@@ -65,8 +67,12 @@ public class Grafik {
             }
         }
         private void wyswietlRanking(){
-            for(int i = 0; i < statystyki.length; i++){
-                System.out.printf("%15s  %15s %15s",statystyki[i][0],statystyki[i][1],statystyki[i][2] + "\n");
+            System.out.printf("%15s  %15s %15s",statystyki[0][0],statystyki[0][1],statystyki[0][2] + "\n");
+            for(int i = 1; i < statystyki.length; i++){
+                double tmp = Double.parseDouble(statystyki[i][2]);
+                System.out.printf("%15s  %15s",statystyki[i][0],statystyki[i][1]);
+                System.out.printf("%15.2f", tmp);
+                System.out.println("");
             }
         }
 
@@ -80,6 +86,27 @@ public class Grafik {
             }
             sortuj(statystyki.length);
         }
+
+        private int pobierzIdPierwszegoMiejsca(){
+            return Integer.parseInt(statystyki[1][0]);
+        }
+
+        public void zapiszDoPliku() throws FileNotFoundException {
+            PrintWriter plik = new PrintWriter("grafik.txt");
+            plik.println("GRAFIK TYGODNIOWY");
+            for(int i = 0; i < wiersze; i++){
+                plik.printf("%25s  %15s  %15s  %15s  %15s  %15s  %15s %15s",tygodniowySzablon[i][0],tygodniowySzablon[i][1],tygodniowySzablon[i][2],tygodniowySzablon[i][3],tygodniowySzablon[i][4],tygodniowySzablon[i][5],tygodniowySzablon[i][6],tygodniowySzablon[i][7] + "\n");
+            }
+            plik.println("RANKING");
+            plik.printf("%15s  %15s %15s",statystyki[0][0],statystyki[0][1],statystyki[0][2] + "\n");
+            for(int i = 1; i < statystyki.length; i++){
+                double tmp = Double.parseDouble(statystyki[i][2]);
+                plik.printf("%15s  %15s",statystyki[i][0],statystyki[i][1]);
+                plik.printf("%15.2f", tmp);
+                plik.println("");
+            }
+            plik.close();
+        }
     }
     public void uzupelnijRanking(List<Pracownik> listaPracownikow){
         ranking = new Ranking((listaPracownikow.size()+1));
@@ -89,9 +116,12 @@ public class Grafik {
         ranking.wyswietlRanking();
     }
 
+    public int pobierzIdPierwszegoMiejsca(){
+        return ranking.pobierzIdPierwszegoMiejsca();
+    }
+
     public void zaktualizujRanking(Pracownik pracownik){
         ranking.zaktualizujRanking(pracownik);
-
     }
 
     public String[][] getTygodniowySzablon() {
@@ -116,4 +146,9 @@ public class Grafik {
     public void setRanking(Ranking ranking) {
         this.ranking = ranking;
     }
+
+    public void zapiszDoPliku() throws FileNotFoundException {
+        ranking.zapiszDoPliku();
+    }
+
 }

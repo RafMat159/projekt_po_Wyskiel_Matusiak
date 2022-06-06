@@ -8,18 +8,20 @@ public abstract class Osoba {
     private double tygWyplataNetto;
     private double liczbaPrzepracowanychGodzin;
     private double stawkaGodzinowa;
+    private double wysokoscPremii;
     private String imie;
     private String nazwisko;
     private String status;
     private Konto konto; //KOMPOZYCJA
 
     public Osoba(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
-                 double stawkaGodzinowa, String imie, String nazwisko, String status) {
+                 double stawkaGodzinowa, double wysokoscPremii, String imie, String nazwisko, String status) {
         this.idPracownika = idPracownika;
         this.tygWyplataBrutto = tygWyplataBrutto;
         this.tygWyplataNetto = tygWyplataNetto;
         this.liczbaPrzepracowanychGodzin = liczbaPrzepracowanychGodzin;
         this.stawkaGodzinowa = stawkaGodzinowa;
+        this.wysokoscPremii = wysokoscPremii;
         this.imie = imie;
         this.nazwisko = nazwisko;
         this.status = status;
@@ -102,5 +104,13 @@ public abstract class Osoba {
 
     public void setStawkaGodzinowa(double stawkaGodzinowa) {
         this.stawkaGodzinowa = stawkaGodzinowa;
+    }
+
+    public double getWysokoscPremii() {
+        return wysokoscPremii;
+    }
+
+    public void setWysokoscPremii(double wysokoscPremii) {
+        this.wysokoscPremii = wysokoscPremii;
     }
 }
