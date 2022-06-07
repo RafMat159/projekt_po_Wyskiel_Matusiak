@@ -1,8 +1,10 @@
 package com.company;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public abstract class Osoba {
+public abstract class Osoba implements MenuInterfejs{
     private int idPracownika;
     private double tygWyplataBrutto;
     private double tygWyplataNetto;
@@ -32,7 +34,7 @@ public abstract class Osoba {
 
     @Override
     public String toString(){
-        return "idPracownika: " + idPracownika + "\nimie: " + imie + "\nnazwisko: " + nazwisko + "status: " + status
+        return "idPracownika: " + idPracownika + "\nimie: " + imie + "\nnazwisko: " + nazwisko + "\nstatus: " + status
                 + "\ntygodniowa wyplata brutto: " + tygWyplataBrutto + "\ntygodniowa wyplata netto: "
                 + tygWyplataNetto + "\nstawka godzinowa: " + stawkaGodzinowa + "\nliczba przepracowanych godzin" + liczbaPrzepracowanychGodzin;
     }
@@ -48,6 +50,11 @@ public abstract class Osoba {
             }
             System.out.println();
         }
+    }
+
+    public List<Pracownik> getListaPracownikow() {
+        return new ArrayList<>() {
+        };
     }
 
     public void sprawdzRanking(Grafik grafik){

@@ -1,15 +1,16 @@
 package com.company;
 
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Manager extends Osoba implements MenuInterfejs {
+public class Manager extends Osoba implements MenuInterfejs, Serializable {
+    private final String NAZWA_PLIKU_GRAFIKU = "grafik.xml";
     private List<Pracownik> listaPracownikow = new ArrayList<>(); //KOMPOZYCJA
-
     public Manager(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
                    double stawkaGodzinowa, double wysokoscPremii, String imie, String nazwisko, String status) {
         super(idPracownika, tygWyplataBrutto, tygWyplataNetto, liczbaPrzepracowanychGodzin, stawkaGodzinowa, wysokoscPremii, imie, nazwisko, status);
@@ -27,9 +28,11 @@ public class Manager extends Osoba implements MenuInterfejs {
         switch(wybor){
             case 1:
                 ustalGrafik(grafik);
+                ObslugaXML.grafikToXml(grafik, NAZWA_PLIKU_GRAFIKU);
                 break;
             case 2:
                 zmodyfikujGrafik(grafik);
+                ObslugaXML.grafikToXml(grafik, NAZWA_PLIKU_GRAFIKU);
                 break;
             case 3:
                 sprawdzGrafik(grafik);
@@ -186,5 +189,10 @@ public class Manager extends Osoba implements MenuInterfejs {
         else
             p1.setTygWyplataNetto(p1.getTygWyplataBrutto() - p1.getTygWyplataBrutto()*0.23);
     }
+
+    public List<Pracownik> getListaPracownikow() {
+        return listaPracownikow;
+    }
+
     //ustalGrafik,zmodyfikujGrafik,Premia,SprawdzGrafik,PodniesStawke,WyplacWynagrodzenie
 }

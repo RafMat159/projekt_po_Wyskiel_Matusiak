@@ -2,9 +2,10 @@ package com.company;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.List;
 
-public class Grafik {
+public class Grafik implements Serializable {
 
     private static final int wiersze = 4; //3 - mozliwe zmiany w ciagu dnia + wiersz na dzien tygodnia
     private  static final int kolumny = 8; // 7 - liczba dni tygodnia + wiersz na godzine
