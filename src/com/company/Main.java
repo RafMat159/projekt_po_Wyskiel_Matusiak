@@ -1,65 +1,112 @@
 package com.company;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        Grafik grafik = new Grafik();
-        Manager managerGrafiku = new Manager(1000, 0,0,0,23.50, 0, "Jan", "Kowalski", "pracownik");
-        Pracownik pracownik1 = new Pracownik(2001, 0, 0 , 0, 20, 0,"Adam", "Nowak", "student", "Jan", "Kowalski",managerGrafiku);
-        Pracownik pracownik2 = new Pracownik(2002, 0, 0 , 0, 19.70, 0,"Aleksandra", "Ptak", "student", "Jan", "Kowalski",managerGrafiku);
-        Pracownik pracownik3 = new Pracownik(2003, 0, 0 , 0, 20.70, 0,"Katarzyna", "Kot", "pracownik", "Jan", "Kowalski",managerGrafiku);
-        Pracownik pracownik4 = new Pracownik(2004, 0, 0 , 0, 20, 0,"Filip", "Kosa", "pracownik", "Jan", "Kowalski",managerGrafiku);
-        int prawda;
-        int logowanie;
+        final String NAZWA_PLIKU_GRAFIKU = "grafik.xml";
+        final String NAZWA_PLIKU_MANAGERA = "manager.xml";
+        Grafik grafik;
+        Osoba managerGrafiku;
+        List<Osoba> listaPracownikow;
+/*        grafik = PierwszeUruchomienie.test1();  //wywolywane przy pierwszym wywołaniu programu
+        managerGrafiku = PierwszeUruchomienie.test2();  //wywolywane przy pierwszym wywołaniu programu
+        listaPracownikow = PierwszeUruchomienie.test3(managerGrafiku);  //wywolywane przy pierwszym wywołaniu programu*/
+
+        managerGrafiku = ObslugaXML.xmlToManager(NAZWA_PLIKU_MANAGERA); //wywolywane przy kolejnych uruchomieniach programu
+        listaPracownikow = PierwszeUruchomienie.zamien(managerGrafiku);
+        grafik = ObslugaXML.xmlToGrafik(NAZWA_PLIKU_GRAFIKU); //wywolywane przy kolejnych uruchomieniach programu
+
+        int prawda = 1;
+        int logowanie = 1;
         do {
             System.out.println("Podaj swoje ID");
             Scanner in = new Scanner(System.in);
-            int id = in.nextInt();
-            if (id < 2000) {
+            int id = -1;
+            try {
+                 id = Integer.parseInt(in.nextLine());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Niepoprawne dane! Podaj swoje ID");
+            }
+            if (id == 1000) {
                 System.out.println("Manager, Jan Kowalski, id:1000");
                 do {
                     managerGrafiku.menu(grafik);
                     System.out.println("Czy chcesz kontynuowac? (1-tak, 0-nie)");
-                    prawda = in.nextInt();
+                    prawda = -1;
+                    boolean czyPoprawne = false;
+                    while(!czyPoprawne){
+                        try {
+                            prawda = Integer.parseInt(in.nextLine());
+                        }
+                        catch(NumberFormatException e){
+                            System.out.println("Wybierz jedna z dwoch opcji");
+                            continue;
+                        }
+                        if(prawda > 1 || prawda < 0) {
+                            System.out.println("Wybierz jedna z dwoch opcji");
+                            prawda = -1;
+                        }
+                        czyPoprawne = prawda != -1;
+                    }
                 } while (prawda == 1);
             } else {
-                if (id == 2001) {
-                    System.out.println("Pracownik, "+ pracownik1.getImie()+ " " + pracownik1.getNazwisko() + ", id:" + pracownik1.getIdPracownika());
-                    do {
-                        pracownik1.menu(grafik);
-                        System.out.println("Czy chcesz kontynuowac? (1-tak, 0-nie)");
-                        prawda = in.nextInt();
-                    } while (prawda == 1);
-                } else if (id == 2002) {
-                    System.out.println("Pracownik, "+ pracownik2.getImie()+ " " + pracownik2.getNazwisko() + ", id:" + pracownik2.getIdPracownika());
-                    do {
-                        pracownik2.menu(grafik);
-                        System.out.println("Czy chcesz kontynuowac? (1-tak, 0-nie)");
-                        prawda = in.nextInt();
-                    } while (prawda == 1);
+                boolean znaleziono = false;
+                for (int i = 0; i < listaPracownikow.size(); i++) {
+                    if (id == listaPracownikow.get(i).getIdPracownika()) {
+                        znaleziono = true;
+                        System.out.println("Pracownik, " + listaPracownikow.get(i).getImie() + " " + listaPracownikow.get(i).getNazwisko() + ", id:" + listaPracownikow.get(i).getIdPracownika());
+                        do {
+                            listaPracownikow.get(i).menu(grafik);
+                            System.out.println("Czy chcesz kontynuowac? (1-tak, 0-nie)");
+
+                            prawda = -1;
+                            boolean czyPoprawne = false;
+                            while(!czyPoprawne){
+                                try {
+                                    prawda = Integer.parseInt(in.nextLine());
+                                }
+                                catch(NumberFormatException e){
+                                    System.out.println("Wybierz jedna z dwoch opcji");
+                                    continue;
+                                }
+                                if(prawda > 1 || prawda < 0) {
+                                    System.out.println("Wybierz jedna z dwoch opcji");
+                                    prawda = -1;
+                                }
+                                czyPoprawne = prawda != -1;
+                            }
+
+                        } while (prawda == 1);
+                    }
                 }
-                else if (id == 2003) {
-                    System.out.println("Pracownik, "+ pracownik2.getImie()+ " " + pracownik2.getNazwisko() + ", id:" + pracownik2.getIdPracownika());
-                    do {
-                        pracownik3.menu(grafik);
-                        System.out.println("Czy chcesz kontynuowac? (1-tak, 0-nie)");
-                        prawda = in.nextInt();
-                    } while (prawda == 1);
-                }
-                else if (id == 2004) {
-                    System.out.println("Pracownik, "+ pracownik2.getImie()+ " " + pracownik2.getNazwisko() + ", id:" + pracownik2.getIdPracownika());
-                    do {
-                        pracownik4.menu(grafik);
-                        System.out.println("Czy chcesz kontynuowac? (1-tak, 0-nie)");
-                        prawda = in.nextInt();
-                    } while (prawda == 1);
+                if(!znaleziono){
+                    System.out.println("Nie ma pracownika o podanym ID!");
                 }
             }
             System.out.println("Czy chcesz się zalogowac? (1-tak, 0-nie)");
-            logowanie = in.nextInt();
+            logowanie = -1;
+            boolean czyPoprawne = false;
+            while(!czyPoprawne){
+                try {
+                    logowanie = Integer.parseInt(in.nextLine());
+                }
+                catch(NumberFormatException e){
+                    System.out.println("Wybierz jedna z dwoch opcji");
+                    continue;
+                }
+                if(logowanie > 1 || logowanie < 0) {
+                    System.out.println("Wybierz jedna z dwoch opcji");
+                    logowanie = -1;
+                }
+
+                czyPoprawne = logowanie != -1;
+            }
         } while (logowanie == 1);
     }
+
 }

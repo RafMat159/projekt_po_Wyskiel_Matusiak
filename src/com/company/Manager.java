@@ -1,15 +1,16 @@
 package com.company;
 
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Manager extends Osoba implements MenuInterfejs {
-    private List<Pracownik> listaPracownikow = new ArrayList<>(); //KOMPOZYCJA
-
+public class Manager extends Osoba implements MenuInterfejs, Serializable {
+    private final String NAZWA_PLIKU_GRAFIKU = "grafik.xml";
+    private final List<Pracownik> listaPracownikow = new ArrayList<>(); //KOMPOZYCJA
     public Manager(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
                    double stawkaGodzinowa, double wysokoscPremii, String imie, String nazwisko, String status) {
         super(idPracownika, tygWyplataBrutto, tygWyplataNetto, liczbaPrzepracowanychGodzin, stawkaGodzinowa, wysokoscPremii, imie, nazwisko, status);
@@ -23,13 +24,27 @@ public class Manager extends Osoba implements MenuInterfejs {
     public void menu(Grafik grafik) throws FileNotFoundException {
         System.out.println("Wybierz dzialanie:\n1.Ustal Grafik\n2.Zmodyfikuj grafik\n3.Sprawdz grafik\n4.Wyplac wynagrodzenie\n5.Podnies stawke\n6.Premia\n7.Wyswietl Ranking\n8.Zapisz grafik do pliku");
         Scanner in = new Scanner(System.in);
-        int wybor = in.nextInt();
+        int wybor = -1;
+        boolean czyPoprawne = false;
+        while(!czyPoprawne){
+            try {
+                wybor = Integer.parseInt(in.nextLine());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Niepoprawne dane! Wybierz dzialanie");
+            }
+
+            czyPoprawne = wybor != -1;
+        }
+
         switch(wybor){
             case 1:
                 ustalGrafik(grafik);
+                ObslugaXML.grafikToXml(grafik, NAZWA_PLIKU_GRAFIKU);
                 break;
             case 2:
                 zmodyfikujGrafik(grafik);
+                ObslugaXML.grafikToXml(grafik, NAZWA_PLIKU_GRAFIKU);
                 break;
             case 3:
                 sprawdzGrafik(grafik);
@@ -43,17 +58,39 @@ public class Manager extends Osoba implements MenuInterfejs {
                 for(int i = 0; i < listaPracownikow.size(); i++){
                     System.out.println(listaPracownikow.get(i).idImieNazwiskoPracownika());
                 }
-                int id = in.nextInt();
+                int id = -1;
+                czyPoprawne = false;
+                while(!czyPoprawne){
+                    try {
+                        id = Integer.parseInt(in.nextLine());
+                    }
+                    catch(NumberFormatException e){
+                        System.out.println("Niepoprawne dane! Podaj ID pracownika");
+                    }
+
+                    czyPoprawne = id != -1;
+                }
+
+                if (id < 2000 || id > (2000 + listaPracownikow.size())) {
+                    System.out.println("Nie istnieje pracownik o takim ID!\nWybierz pracownika o poprawnym id:");
+                    id = -1;
+                    czyPoprawne = false;
+                    while(!czyPoprawne){
+                        try {
+                            id = Integer.parseInt(in.nextLine());
+                        }
+                        catch(NumberFormatException e){
+                            System.out.println("Niepoprawne dane! Podaj ID pracownika");
+                        }
+
+                        czyPoprawne = id != -1;
+                    }
+                }
                 int index = znajdzId(id);
                 podniesStawke(listaPracownikow.get(index));
                 break;
             case 6:
-//                System.out.println("Wybierz pracownika ktoremu chcesz dac premie :");   //PRACOWNIK BEDZIE POBIERANY Z TABLICY RANKING
-//                for(int i = 0; i < listaPracownikow.size(); i++){
-//                    System.out.println(listaPracownikow.get(i).idImieNazwiskoPracownika());
-//                }
-
-                int id2 = grafik.pobierzIdPierwszegoMiejsca();;
+                int id2 = grafik.pobierzIdPierwszegoMiejsca();
                 int index2 = znajdzId(id2);
                 premia(listaPracownikow.get(index2));
                 break;
@@ -90,7 +127,19 @@ public class Manager extends Osoba implements MenuInterfejs {
                 if(j == 2) System.out.println("14.00-22.00");
                 if(j == 3) System.out.println("22.00-6.00");
 
-                int id = in.nextInt();
+                int id = -1;
+                boolean czyPoprawne = false;
+                while(!czyPoprawne){
+                    try {
+                        id = Integer.parseInt(in.nextLine());
+                    }
+                    catch(NumberFormatException e){
+                        System.out.println("Niepoprawne dane! Podaj ID pracownika");
+                    }
+
+                    czyPoprawne = id != -1;
+                }
+
 
                 if(id < 2000 || id > (2000+listaPracownikow.size())) {
                     System.out.println("Nie istnieje pracownik o takim ID!");
@@ -105,35 +154,108 @@ public class Manager extends Osoba implements MenuInterfejs {
             }
         }
 
-        grafik.uzupelnijRanking(listaPracownikow);//uzupelnienie rankingu
+        try {
+            grafik.uzupelnijRanking(listaPracownikow);//uzupelnienie rankingu
+        }
+        catch(Exception e){
+            System.out.println("Nie udalo sie uzupelnic ranking!");
+        }
     }
 
     public void zmodyfikujGrafik(Grafik grafik){
         System.out.println("Wybierz dzień do edycji:\n1.Poniedzialek\n2.Wtorek\n3.Sroda\n4.Czwartek\n5.Piatek\n6.Sobota\n7.Niedziela");
         Scanner in = new Scanner(System.in);
-        int dzien = in.nextInt();
+        int dzien = -1;
+        boolean czyPoprawne = false;
+        while(!czyPoprawne){
+            try {
+                dzien = Integer.parseInt(in.nextLine());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Wybierz poprawny dzien");
+                continue;
+            }
+            if(dzien < 1 || dzien > 7) {
+                System.out.println("Wybierz poprawny dzien");
+                dzien = -1;
+            }
+
+            czyPoprawne = dzien != -1;
+        }
+
+
         System.out.println("Wybierz zmianę:\n1.6.00-14.00\n2.14.00-22.00\n3.22.00-6.00");
-        int zmiana = in.nextInt();
+        int zmiana = -1;
+        czyPoprawne = false;
+        while(!czyPoprawne){
+            try {
+                zmiana = Integer.parseInt(in.nextLine());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Wybierz poprawną zmiane");
+                continue;
+            }
+            if(zmiana < 1 || zmiana > 3) {
+                System.out.println("Wybierz poprawną zmiane");
+                zmiana = -1;
+            }
+
+            czyPoprawne = zmiana != -1;
+        }
+
         System.out.println("Wybierz pracownika");
         for(int i = 0; i < listaPracownikow.size(); i++){
             System.out.println(listaPracownikow.get(i).idImieNazwiskoPracownika());
         }
-        int id = in.nextInt();
+
+        int id = -1;
+        czyPoprawne = false;
+        while(!czyPoprawne){
+            try {
+                id = Integer.parseInt(in.nextLine());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Niepoprawne dane! Podaj ID pracownika");
+            }
+
+            czyPoprawne = id != -1;
+        }
+
         boolean prawda = true;
         while(prawda) {
             if (id < 2000 || id > (2000 + listaPracownikow.size())) {
                 System.out.println("Nie istnieje pracownik o takim ID!\nWybierz pracownika o poprawnym id:");
-                id = in.nextInt();
+                id = -1;
+                czyPoprawne = false;
+                while(!czyPoprawne){
+                    try {
+                        id = Integer.parseInt(in.nextLine());
+                    }
+                    catch(NumberFormatException e){
+                        System.out.println("Niepoprawne dane! Podaj ID pracownika");
+                    }
+
+                    czyPoprawne = id != -1;
+                }
             }
             else {
                 prawda = false;
                 int index = znajdzId(id);
                 String[][] tabGrafik = grafik.getTygodniowySzablon();
                 int indexStarego = znajdzId(Integer.parseInt(tabGrafik[zmiana][dzien]));
-                listaPracownikow.get(indexStarego).setLiczbaPrzepracowanychGodzin(listaPracownikow.get(indexStarego).getLiczbaPrzepracowanychGodzin()-8.0); //zmniejszenie liczby przepracowanych godzin
+                double godzinyP1 = 0;
+                double godzinyP2 = 0;
+                try{
+                    godzinyP1 = grafik.pobierzDaneOGodzinach(id);
+                    godzinyP2 = grafik.pobierzDaneOGodzinach(indexStarego);
+                }catch (Exception e){
+                    System.out.println("Nie udalo sie pobrac danych");
+                }
+
+                listaPracownikow.get(indexStarego).setLiczbaPrzepracowanychGodzin(godzinyP2-8.0); //zmniejszenie liczby przepracowanych godzin
                 obliczWyplate(listaPracownikow.get(indexStarego));
                 grafik.zaktualizujRanking(listaPracownikow.get(indexStarego));
-                listaPracownikow.get(index).setLiczbaPrzepracowanychGodzin(listaPracownikow.get(index).getLiczbaPrzepracowanychGodzin()+8.0); //zwiekszanie liczby przepracowanych godzin
+                listaPracownikow.get(index).setLiczbaPrzepracowanychGodzin(godzinyP1+8.0); //zwiekszanie liczby przepracowanych godzin
                 obliczWyplate(listaPracownikow.get(index));
                 grafik.zaktualizujRanking(listaPracownikow.get(index));
             }
@@ -171,7 +293,19 @@ public class Manager extends Osoba implements MenuInterfejs {
     private void podniesStawke(Pracownik p1){
         System.out.println("O ile chcesz podeniesc stawke godzinowa: ");
         Scanner in = new Scanner(System.in);
-        double stawka = in.nextDouble();
+        double stawka = -1;
+        boolean czyPoprawne = false;
+        while(!czyPoprawne){
+            try {
+                stawka = Double.parseDouble(in.nextLine());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Niepoprawne dane! Podaj wartosc liczbowa");
+            }
+
+            czyPoprawne = stawka != -1;
+        }
+
         p1.setStawkaGodzinowa(p1.getStawkaGodzinowa() + stawka);
         obliczWyplate(p1);
     }
@@ -179,7 +313,19 @@ public class Manager extends Osoba implements MenuInterfejs {
     private void premia(Pracownik p1){
         System.out.println("Podaj wysokosc premii: ");
         Scanner in = new Scanner(System.in);
-        double kwota = in.nextDouble();
+        double kwota = -1;
+        boolean czyPoprawne = false;
+        while(!czyPoprawne){
+            try {
+                kwota = Double.parseDouble(in.nextLine());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Niepoprawne dane! Podaj wartosc liczbowa");
+            }
+
+            czyPoprawne = kwota != -1;
+        }
+
         p1.setWysokoscPremii(kwota);
         obliczWyplate(p1);
     }
@@ -191,5 +337,9 @@ public class Manager extends Osoba implements MenuInterfejs {
         else
             p1.setTygWyplataNetto(p1.getTygWyplataBrutto() - p1.getTygWyplataBrutto()*0.23);
     }
-    //ustalGrafik,zmodyfikujGrafik,Premia,SprawdzGrafik,PodniesStawke,WyplacWynagrodzenie
+
+    public List<Pracownik> getListaPracownikow() {
+        return listaPracownikow;
+    }
+
 }

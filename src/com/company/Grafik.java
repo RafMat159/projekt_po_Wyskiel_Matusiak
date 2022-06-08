@@ -2,9 +2,10 @@ package com.company;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.List;
 
-public class Grafik {
+public class Grafik implements Serializable {
 
     private static final int wiersze = 4; //3 - mozliwe zmiany w ciagu dnia + wiersz na dzien tygodnia
     private  static final int kolumny = 8; // 7 - liczba dni tygodnia + wiersz na godzine
@@ -25,7 +26,7 @@ public class Grafik {
         tygodniowySzablon[3][0] = "22:00-6:00";
     }
 
-    class Ranking{          //klasa wewnetrzna
+    private class Ranking{          //klasa wewnetrzna
         private String[][] statystyki;
         public Ranking(int liczbaPracownikow) {
             statystyki = new String[liczbaPracownikow][3];
@@ -107,6 +108,27 @@ public class Grafik {
             }
             plik.close();
         }
+
+        private double pobierzDaneOGodzinach(int id){
+            double wartosc = 0;
+            int idP = 2001+id;
+            for(int i = 0; i < statystyki.length; i++ ){
+                if(Integer.toString(id).equals(statystyki[i][0]) || Integer.toString(idP).equals(statystyki[i][0])){
+                    wartosc = Double.parseDouble(statystyki[i][1]);
+                    break;
+                }
+            }
+            return wartosc;
+        }
+
+        private double pobierzDaneOWyplacie(int id){
+            double wartosc = 0;
+            for(int i = 0; i < statystyki.length; i++ ){
+                if(Integer.toString(id).equals(statystyki[i][0]))
+                    wartosc = Double.parseDouble(statystyki[i][2]);
+            }
+            return wartosc;
+        }
     }
     public void uzupelnijRanking(List<Pracownik> listaPracownikow){
         ranking = new Ranking((listaPracownikow.size()+1));
@@ -149,6 +171,14 @@ public class Grafik {
 
     public void zapiszDoPliku() throws FileNotFoundException {
         ranking.zapiszDoPliku();
+    }
+
+    public double pobierzDaneOGodzinach(int id){
+        return ranking.pobierzDaneOGodzinach(id);
+    }
+
+    public double pobierzDaneOWyplacie(int id){
+        return ranking.pobierzDaneOWyplacie(id);
     }
 
 }

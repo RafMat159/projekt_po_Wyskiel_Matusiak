@@ -1,12 +1,11 @@
 package com.company;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Pracownik extends Osoba implements MenuInterfejs{
 
-    private String imieManagera;
-    private String nazwiskoManagera;
+    private final String imieManagera;
+    private final String nazwiskoManagera;
 
     public Pracownik(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
                      double stawkaGodzinowa, double wysokoscPremii, String imie, String nazwisko, String status, String imieManagera, String nazwiskoManagera, Manager manager) {
@@ -25,13 +24,25 @@ public class Pracownik extends Osoba implements MenuInterfejs{
     public void menu(Grafik grafik) {
         System.out.println("Wybierz dzialanie:\n1.Sprawdz swoj grafik\n2.Sprawdz swoja wyplate\n3.WyswietlRanking");
         Scanner in = new Scanner(System.in);
-        int dzialanie = in.nextInt();
-        switch (dzialanie){
+        int wybor = -1;
+        boolean czyPoprawne = false;
+        while(!czyPoprawne){
+            try {
+                wybor = Integer.parseInt(in.nextLine());
+            }
+            catch(NumberFormatException e){
+                System.out.println("Niepoprawne dane! Wybierz dzialanie");
+            }
+
+            czyPoprawne = wybor != -1;
+        }
+
+        switch (wybor){
             case 1:
                 sprawdzGrafik(grafik);
                 break;
             case 2:
-                sprawdzWyplate();
+                sprawdzWyplate(grafik);
                 break;
             case 3:
                 sprawdzRanking(grafik);
@@ -41,12 +52,18 @@ public class Pracownik extends Osoba implements MenuInterfejs{
         }
     }
 
-    public void sprawdzWyplate(){
+    public void sprawdzWyplate(Grafik grafik){
+        double wyplata = grafik.pobierzDaneOWyplacie(getIdPracownika());
+        setTygWyplataBrutto(wyplata);
         System.out.print("\nTygodniowa wyplata brutto wynosi: ");
         System.out.printf("%5.2f", getTygWyplataBrutto());
+        if(getStatus().equals("student"))
+            setTygWyplataNetto(wyplata);
+        else
+            setTygWyplataNetto(wyplata - (wyplata * 0.23));
         System.out.print("\nTygodniowa wyplata netto wynosi: ");
         System.out.printf("%5.2f", getTygWyplataNetto());
-        System.out.println("");
+        System.out.println();
     }
 
 }
