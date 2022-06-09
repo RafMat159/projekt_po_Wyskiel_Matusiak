@@ -2,9 +2,14 @@ package com.company;
 
 import java.util.Scanner;
 
+/**
+ * Obiekt <code>Pracownik</code> przechowuje informacje o pracowniku
+ */
 public class Pracownik extends Osoba implements MenuInterfejs{
 
+    /**Zmienna przechowująca imie managera dla pracownika*/
     private final String imieManagera;
+    /**Zmienna przechowująca nazwisko managera dla pracownika*/
     private final String nazwiskoManagera;
 
     public Pracownik(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
@@ -16,10 +21,18 @@ public class Pracownik extends Osoba implements MenuInterfejs{
     }
 
 
+    /**
+     * Metoda zwracająca imie, nazwisko i id pracownika
+     * @return ciąg znaków z imieniem, nazwiskiem i id pracownika
+     */
     public String idImieNazwiskoPracownika(){
         return getImie() + " " + getNazwisko() + ", " + getIdPracownika();
     }
 
+    /**
+     * Metoda menu pozwala na uruchomienie odpowiednich funkcji wskazanych przez pracownika w trakcie działania programu
+     * @param grafik istniejący grafik
+     */
     @Override
     public void menu(Grafik grafik) {
         System.out.println("Wybierz dzialanie:\n1.Sprawdz swoj grafik\n2.Sprawdz swoja wyplate\n3.WyswietlRanking");
@@ -42,7 +55,7 @@ public class Pracownik extends Osoba implements MenuInterfejs{
                 sprawdzGrafik(grafik);
                 break;
             case 2:
-                sprawdzWyplate(grafik);
+                sprawdzWyplate();
                 break;
             case 3:
                 sprawdzRanking(grafik);
@@ -52,15 +65,13 @@ public class Pracownik extends Osoba implements MenuInterfejs{
         }
     }
 
-    public void sprawdzWyplate(Grafik grafik){
-        double wyplata = grafik.pobierzDaneOWyplacie(getIdPracownika());
-        setTygWyplataBrutto(wyplata);
+    /**
+     * Metoda pozwalająca na wyświetlenie danych o wypłacie brutto i netto pracownika
+     */
+    private void sprawdzWyplate(){
+
         System.out.print("\nTygodniowa wyplata brutto wynosi: ");
         System.out.printf("%5.2f", getTygWyplataBrutto());
-        if(getStatus().equals("student"))
-            setTygWyplataNetto(wyplata);
-        else
-            setTygWyplataNetto(wyplata - (wyplata * 0.23));
         System.out.print("\nTygodniowa wyplata netto wynosi: ");
         System.out.printf("%5.2f", getTygWyplataNetto());
         System.out.println();
