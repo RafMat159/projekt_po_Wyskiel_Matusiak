@@ -7,7 +7,9 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
+        /**Zmienna finalna przechowująca nazwę pliku xml dla grafiku*/
         final String NAZWA_PLIKU_GRAFIKU = "grafik.xml";
+        /**Zmienna finalna przechowująca nazwę pliku xml dla managera*/
         final String NAZWA_PLIKU_MANAGERA = "manager.xml";
         Grafik grafik;
         Osoba managerGrafiku;
@@ -21,7 +23,7 @@ public class Main {
         grafik = ObslugaXML.xmlToGrafik(NAZWA_PLIKU_GRAFIKU); //wywolywane przy kolejnych uruchomieniach programu
         PierwszeUruchomienie.przywrocenieDanych(grafik, listaPracownikow);
 
-        int prawda = 1;
+        int wybor = 1;
         int logowanie = 1;
         do {
             System.out.println("Podaj swoje ID");
@@ -38,9 +40,9 @@ public class Main {
                 do {
                     managerGrafiku.menu(grafik);
                     System.out.println("Czy chcesz kontynuowac? (1-tak, 0-nie)");
-                    prawda = PierwszeUruchomienie.funkcjaWyboru(in,prawda);
+                    wybor = PierwszeUruchomienie.funkcjaWyboru(in,wybor);
 
-                } while (prawda == 1);
+                } while (wybor == 1);
             } else {
                 boolean znaleziono = false;
                 for (int i = 0; i < listaPracownikow.size(); i++) {
@@ -50,9 +52,9 @@ public class Main {
                         do {
                             listaPracownikow.get(i).menu(grafik);
                             System.out.println("Czy chcesz kontynuowac? (1-tak, 0-nie)");
-                            prawda = PierwszeUruchomienie.funkcjaWyboru(in,prawda);
+                            wybor = PierwszeUruchomienie.funkcjaWyboru(in,wybor);
 
-                        } while (prawda == 1);
+                        } while (wybor == 1);
                     }
                 }
                 if(!znaleziono){

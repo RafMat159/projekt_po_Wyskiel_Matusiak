@@ -4,17 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Obiekt <code>PierwszeUruchomienie</code> odpowiada za inicjalizację obiektów z ustawieniami początkowymi
+ */
 public class PierwszeUruchomienie {
+    /**Zmienna finalna przechowująca nazwę pliku xml*/
     private static final String MANAGER = "manager.xml";
+
+    /**
+     * Metoda tworząca referencję do obiektu grafiku
+     * @return grafik
+     */
     public static Grafik test1(){
         Grafik grafik = new Grafik();
         return grafik;
     }
+
+    /**
+     * Metoda tworząca managera i zapisująca go do pliku XML
+     * @return manager grafiku
+     */
     public static Manager test2(){
         Manager managerGrafiku = new Manager(1000, 0,0,0,23.50, 0, "Jan", "Kowalski", "pracownik");
         ObslugaXML.managerToXml(managerGrafiku, MANAGER);
         return managerGrafiku;
     }
+
+    /**
+     * Metoda tworząca pracowników i zapisująca ich do pliku XML
+     * @param managerGrafiku referencja do managera
+     * @return lista zawierająca utworzonych pracowników
+     */
     public static List<Osoba> test3(Osoba managerGrafiku){
         List<Osoba> listaPracownikow = new ArrayList<>();
         if(managerGrafiku instanceof Manager) {
@@ -31,6 +51,11 @@ public class PierwszeUruchomienie {
         return listaPracownikow;
     }
 
+    /**
+     * Metoda odpowiedzialna za zamianę listy obiektów Pracownik na listę obiektów Osoba
+     * @param managerGrafiku referencja do managera
+     * @return lista pracownikow
+     */
     public static List<Osoba> zamien(Osoba managerGrafiku){
         List<Osoba> listaPracownikow1 = new ArrayList<>();
         List<Pracownik> listaPracownikow2 = managerGrafiku.getListaPracownikow();
@@ -40,6 +65,11 @@ public class PierwszeUruchomienie {
         return listaPracownikow1;
     }
 
+    /**
+     * Metoda sprawdzająca czy program jest uruchomiony po raz pierwszy. Sprawdza czy grafik został utworzony.
+     * @param grafik G
+     * @return true - grafik jest już utworzony, kolejne uruchomienie programu, false - grafik nie jest utworzony, pierwsze uruchomienie programu
+     */
     public static boolean czyToPierwszeUruchomienie(Grafik grafik){
         String[][] tabGrafik = grafik.getTygodniowySzablon();
         for (int i=0; i < tabGrafik.length; i++){
@@ -51,26 +81,37 @@ public class PierwszeUruchomienie {
         return false;
     }
 
-    public static int funkcjaWyboru(Scanner in, int prawda){
-        prawda = -1;
+    /**
+     * Metoda sprawdzajaca poprawnosc dla funkcji wyboru miedzy dwiema ustalonymi opcjami
+     * @param in wejscie do wprowadzania danych z konsoli
+     * @param wybor wartosc liczbowa odpowiadajaca wyborowi
+     * @return poprawny wybor
+     */
+    public static int funkcjaWyboru(Scanner in, int wybor){
+        wybor = -1;
         boolean czyPoprawne = false;
         while(!czyPoprawne){
             try {
-                prawda = Integer.parseInt(in.nextLine());
+                wybor = Integer.parseInt(in.nextLine());
             }
             catch(NumberFormatException e){
                 System.out.println("Wybierz jedna z dwoch opcji");
                 continue;
             }
-            if(prawda > 1 || prawda < 0) {
+            if(wybor > 1 || wybor < 0) {
                 System.out.println("Wybierz jedna z dwoch opcji");
-                prawda = -1;
+                wybor = -1;
             }
-            czyPoprawne = prawda != -1;
+            czyPoprawne = wybor != -1;
         }
-        return prawda;
+        return wybor;
     }
 
+    /**
+     * Metoda przywracająca wartosci ilosci przepracownych godzin, wyplaty brutto i stawki godzinowej dla pracownikow
+     * @param grafik ustalony grafik
+     * @param listaPracownikow lista pracowników, dla których należy przywrócić ustawienia
+     */
     public static void przywrocenieDanych(Grafik grafik, List<Osoba> listaPracownikow){
         double godziny = 0;
         double wyplata = 0;

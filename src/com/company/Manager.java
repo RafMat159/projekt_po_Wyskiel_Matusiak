@@ -11,7 +11,9 @@ import java.util.Scanner;
  * Klasa Manager umozliwia tworzenie obiektow, ktore zarzadzaja przypisywaniem danych pracownikow do grafiku oraz pozwala na przyznawanie wynagrodzenia poszczegolnym pracownikom.
  * */
 public class Manager extends Osoba implements MenuInterfejs, Serializable {
+    /**Stala przechowujaca nazwe pliku, w ktorym zapisywany jest obiekt typu Grafik*/
     private final String NAZWA_PLIKU_GRAFIKU = "grafik.xml";
+    /**Lista przechowujaca liste pracownikow, ktorzy podlegaja pod danego managera*/
     private final List<Pracownik> listaPracownikow = new ArrayList<>(); //KOMPOZYCJA
     public Manager(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
                    double stawkaGodzinowa, double wysokoscPremii, String imie, String nazwisko, String status) {
@@ -124,7 +126,10 @@ public class Manager extends Osoba implements MenuInterfejs, Serializable {
 
         }
     }
-
+    /**
+     * Funkcja ustalajaca tygodniowy grafik
+     * @param grafik grafik ustalany przez managera
+     * */
     private void ustalGrafik(Grafik grafik){
         Scanner in = new Scanner(System.in);
         System.out.println("Pracownicy: ");//Wyswietlenie listy pracownikow
@@ -180,7 +185,10 @@ public class Manager extends Osoba implements MenuInterfejs, Serializable {
             System.out.println("Nie udalo sie uzupelnic ranking!");
         }
     }
-
+    /**
+     * Funkcja umozliwiajaca zmodyfikowanie grafiku
+     * @param grafik grafik ustalany przez managera
+     * */
     private void zmodyfikujGrafik(Grafik grafik){
         System.out.println("Wybierz dzień do edycji:\n1.Poniedzialek\n2.Wtorek\n3.Sroda\n4.Czwartek\n5.Piatek\n6.Sobota\n7.Niedziela");
         Scanner in = new Scanner(System.in);
@@ -242,7 +250,7 @@ public class Manager extends Osoba implements MenuInterfejs, Serializable {
 
         boolean prawda = true;
         while(prawda) {
-            if (id < 2000 || id > (2000 + listaPracownikow.size())) {
+            if (id <= 2000 || id > (2000 + listaPracownikow.size())) {
                 System.out.println("Nie istnieje pracownik o takim ID!\nWybierz pracownika o poprawnym id:");
                 id = -1;
                 czyPoprawne = false;
@@ -272,7 +280,11 @@ public class Manager extends Osoba implements MenuInterfejs, Serializable {
         }
         grafik.uzupelnijGrafik(dzien, zmiana, Integer.toString(id));
     }
-
+    /**
+     * Funkcja umozliwajaca znalezienie indeksu danego pracownika w liscie
+     * @param idPracownika id danego pracownika
+     * @return index pracownika w liscie
+     * */
     private int znajdzId(int idPracownika){ //odszukanie idPracownika dla ktorego zmieniona zostanie liczba przepracowanych godzin
         int i = 0;
         while(idPracownika != listaPracownikow.get(i).getIdPracownika()){
@@ -286,7 +298,10 @@ public class Manager extends Osoba implements MenuInterfejs, Serializable {
         grafik.wyswietlGrafik();    //manager ma dostep do calego grafiku danego tygodnia
     }
 
-
+    /**
+     * Funkcja umozliwiajaca wyplacenie wynagrodzenia pracownikom
+     * @param czyNiedziela numer dnia tygodnia
+     * */
     private void wyplacWynagrodzenie(int czyNiedziela){
         if(czyNiedziela == 7){
             for(int i=0;i<listaPracownikow.size();i++){
@@ -300,6 +315,11 @@ public class Manager extends Osoba implements MenuInterfejs, Serializable {
             System.out.println("Wyplata nie mozliwa do zrealizowania, do dnia wyplaty pozostalo " + (7 - czyNiedziela) + " dni.");
     }
 
+    /**
+     * Funkcja umozliwiajaca podniesienie stawki godzinowej pracownikowi
+     * @param p1 pracownik ktoremu zostanie podniesiona stawka godzinowa
+     * @param grafik grafik ustalany przez managera
+     * */
     private void podniesStawke(Pracownik p1, Grafik grafik){
         System.out.println("O ile chcesz podeniesc stawke godzinowa: ");
         Scanner in = new Scanner(System.in);
@@ -321,6 +341,10 @@ public class Manager extends Osoba implements MenuInterfejs, Serializable {
         grafik.zaktualizujRanking(p1);
     }
 
+    /**
+     * Funkcja umozliwiajaca przyznanie pracownikowi premii
+     * @param p1 pracownik ktoremu zostanie przyznana premia
+     * */
     private void premia(Pracownik p1){
         System.out.println("Podaj wysokosc premii: ");
         Scanner in = new Scanner(System.in);
@@ -340,7 +364,10 @@ public class Manager extends Osoba implements MenuInterfejs, Serializable {
         p1.setWysokoscPremii(kwota);
         obliczWyplate(p1);
     }
-
+    /**
+     * Funkcja oblczajaca wyplate dla danego pracownika
+     * @param p1 pracownik ktoremu zostanie obliczona wyplata
+     * */
     private void obliczWyplate(Pracownik p1){
         p1.setTygWyplataBrutto(p1.getLiczbaPrzepracowanychGodzin()*p1.getStawkaGodzinowa() + p1.getWysokoscPremii());
         if(p1.getStatus().equals("student"))

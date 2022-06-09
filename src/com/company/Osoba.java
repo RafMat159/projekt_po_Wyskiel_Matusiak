@@ -3,17 +3,29 @@ package com.company;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+/**
+ * Abstrakcyjna klasa Osoba po ktorej dziedzicza klasy Manager i Pracownik.
+ * */
 public abstract class Osoba implements MenuInterfejs{
+    /**Zmienna przechowujaca id poszczegolnego pracownika*/
     private int idPracownika;
+    /**Zmienna przechowujaca tygodniowa wyplate brutto danej osoby*/
     private double tygWyplataBrutto;
+    /**Zmienna przechowujaca tygodniowa wyplate netto danej osoby*/
     private double tygWyplataNetto;
+    /**Zmienna przechowujaca liczbe przepracowanych godzin danej osoby*/
     private double liczbaPrzepracowanychGodzin;
+    /**Zmienna przechowujaca stawke godzinowa danej osoby*/
     private double stawkaGodzinowa;
+    /**Zmienna przechowujaca wysokosc premii danej osoby*/
     private double wysokoscPremii;
+    /**Zmienna przechowujaca imie danej osoby*/
     private String imie;
+    /**Zmienna przechowujaca nazwisko danej osoby*/
     private String nazwisko;
+    /**Zmienna przechowujaca status danej osoby (czy zwykly pracownik, czy student)*/
     private String status;
+    /**Zmienna przechowujaca dane dotyczace konta danej osoby*/
     private Konto konto; //KOMPOZYCJA
 
     public Osoba(int idPracownika, double tygWyplataBrutto, double tygWyplataNetto, double liczbaPrzepracowanychGodzin,
@@ -38,7 +50,10 @@ public abstract class Osoba implements MenuInterfejs{
                 + "\ntygodniowa wyplata brutto: " + tygWyplataBrutto + "\ntygodniowa wyplata netto: "
                 + tygWyplataNetto + "\nstawka godzinowa: " + stawkaGodzinowa + "\nliczba przepracowanych godzin" + liczbaPrzepracowanychGodzin;
     }
-
+    /**
+     * Funkcja sluzy do sprawdzenia grafiku danej osoby.
+     * @param grafik ustalany przez managera
+     * */
     public void sprawdzGrafik(Grafik grafik){
         String[][] tabGrafik = grafik.getTygodniowySzablon();
         for(int i = 1; i < tabGrafik.length; i++){

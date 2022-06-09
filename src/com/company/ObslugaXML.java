@@ -8,9 +8,15 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-
+/**
+ * Klasa OblugaXML obslugujaca zapisywanie/odczytywanie danych do/z pliku xml.
+ * */
 public class ObslugaXML {
-
+    /**
+     * Funkcja zapisujaca obiekt typu Grafik do pliku xml
+     * @param g grafik ustalany przez managera
+     * @param nazwaPliku nazwaPliku o rozszerzeniu .xml
+     * */
     public static void grafikToXml(Grafik g, String nazwaPliku){
         if(nazwaPliku != null){
             try{
@@ -29,6 +35,10 @@ public class ObslugaXML {
         }
     }
 
+    /**
+     * Funkcja odczytujaca obiekt typu Grafik z pliku xml
+     * @param nazwaPliku nazwaPliku o rozszerzeniu .xml
+     * */
     public static Grafik xmlToGrafik(String nazwaPliku){
         String xml = "";
         String strLine = "";
@@ -50,7 +60,11 @@ public class ObslugaXML {
         }
         return null;
     }
-
+    /**
+     * Funkcja zapisujaca obiekt typu Manager do pliku xml
+     * @param m manager nadzorujacy dany grafik
+     * @param nazwaPliku nazwaPliku o rozszerzeniu .xml
+     * */
     public static void managerToXml(Manager m, String nazwaPliku){
         if(nazwaPliku != null){
             try{
@@ -69,6 +83,10 @@ public class ObslugaXML {
         }
     }
 
+    /**
+     * Funkcja odczytujaca obiekt typu Manager z pliku xml
+     * @param nazwaPliku nazwaPliku o rozszerzeniu .xml
+     * */
     public static Manager xmlToManager(String nazwaPliku){
         String xml = "";
         String strLine = "";
