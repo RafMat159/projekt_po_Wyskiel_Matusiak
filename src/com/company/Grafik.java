@@ -29,11 +29,11 @@ public class Grafik implements Serializable {
     private class Ranking{          //klasa wewnetrzna
         private String[][] statystyki;
         public Ranking(int liczbaPracownikow) {
-            statystyki = new String[liczbaPracownikow][3];
+            statystyki = new String[liczbaPracownikow][4];
             statystyki[0][0] = "idPracownika";
             statystyki[0][1] = "liczba godzin";
             statystyki[0][2] = "kwota[PLN]";
-
+            statystyki[0][3] = "stawka";
         }
 
         private void uzupelnijRanking(List<Pracownik> listaPracownikow){
@@ -42,6 +42,7 @@ public class Grafik implements Serializable {
                 statystyki[i+1][0] = Integer.toString(listaPracownikow.get(i).getIdPracownika());
                 statystyki[i+1][1] = Double.toString(listaPracownikow.get(i).getLiczbaPrzepracowanychGodzin());
                 statystyki[i+1][2] = Double.toString(listaPracownikow.get(i).getTygWyplataBrutto());
+                statystyki[i+1][3] = Double.toString(listaPracownikow.get(i).getStawkaGodzinowa());
             }
             sortuj(dlugosc); //sortowanie rankingu
         }
@@ -50,19 +51,22 @@ public class Grafik implements Serializable {
             String zamianaId;
             String zamianaGodzin;
             String zamianaKwoty;
+            String zmianaStawki;
             for(int i = 0; i <dlugosc-1;++i){
                 for (int j = 1;j<dlugosc-i-1;++j){
                     if(Double.parseDouble(statystyki[j+1][1]) > Double.parseDouble(statystyki[j][1])) {
                         zamianaId = statystyki[j][0];
                         zamianaGodzin = statystyki[j][1];
                         zamianaKwoty = statystyki[j][2];
+                        zmianaStawki = statystyki[j][3];
                         statystyki[j][0] = statystyki[j+1][0];
                         statystyki[j][1] = statystyki[j+1][1];
                         statystyki[j][2] = statystyki[j+1][2];
+                        statystyki[j][3] = statystyki[j+1][3];
                         statystyki[j+1][0] = zamianaId;
                         statystyki[j+1][1] = zamianaGodzin;
                         statystyki[j+1][2] = zamianaKwoty;
-
+                        statystyki[j+1][3] = zmianaStawki;
                     }
                 }
             }
@@ -83,6 +87,7 @@ public class Grafik implements Serializable {
                     statystyki[i][0] = Integer.toString(pracownik.getIdPracownika());
                     statystyki[i][1] = Double.toString(pracownik.getLiczbaPrzepracowanychGodzin());
                     statystyki[i][2] = Double.toString(pracownik.getTygWyplataBrutto());
+                    statystyki[i][3] = Double.toString(pracownik.getStawkaGodzinowa());
                 }
             }
             sortuj(statystyki.length);
@@ -107,6 +112,35 @@ public class Grafik implements Serializable {
                 plik.println("");
             }
             plik.close();
+        }
+
+        private double pobierzDaneOGodzinach(int id){
+            double wartosc = 0;
+            for(int i = 0; i < statystyki.length; i++ ){
+                if(Integer.toString(id).equals(statystyki[i][0])){
+                    wartosc = Double.parseDouble(statystyki[i][1]);
+                    break;
+                }
+            }
+            return wartosc;
+        }
+
+        private double pobierzDaneOWyplacie(int id){
+            double wartosc = 0;
+            for(int i = 0; i < statystyki.length; i++ ){
+                if(Integer.toString(id).equals(statystyki[i][0]))
+                    wartosc = Double.parseDouble(statystyki[i][2]);
+            }
+            return wartosc;
+        }
+
+        private double pobierzDaneOStawce(int id){
+            double wartosc = 0;
+            for(int i = 0; i < statystyki.length; i++ ){
+                if(Integer.toString(id).equals(statystyki[i][0]))
+                    wartosc = Double.parseDouble(statystyki[i][3]);
+            }
+            return wartosc;
         }
     }
     public void uzupelnijRanking(List<Pracownik> listaPracownikow){
@@ -152,4 +186,15 @@ public class Grafik implements Serializable {
         ranking.zapiszDoPliku();
     }
 
+    public double pobierzDaneOGodzinach(int id){
+        return ranking.pobierzDaneOGodzinach(id);
+    }
+
+    public double pobierzDaneOWyplacie(int id){
+        return ranking.pobierzDaneOWyplacie(id);
+    }
+
+    public double pobierzDaneOStawce(int id){
+        return ranking.pobierzDaneOStawce(id);
+    }
 }
